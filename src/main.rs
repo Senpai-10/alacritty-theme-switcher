@@ -25,6 +25,9 @@ use clap::Parser;
 #[command(version, about, long_about = None)]
 struct Cli {
     theme_name: Option<String>,
+
+    #[arg(short, long, help = "Print current theme name")]
+    print_current_theme: bool,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -283,6 +286,25 @@ fn get_themes() -> Vec<ListItem> {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
+
+    if cli.print_current_theme {
+        let alacritty_cfg_path = find_alacritty_config_file();
+
+        if !Path::new(&alacritty_cfg_path).exists() {
+            eprintln!("alacritty cfg: '{}' not found!", alacritty_cfg_path);
+            exit(1);
+        }
+
+        let alacritty_cfg_str = fs::read_to_string(alacritty_cfg_path).unwrap();
+        let file: YmlColor = serde_yaml::from_str(&alacritty_cfg_str).unwrap();
+
+        println!(
+            "{}",
+            file.colors.name.unwrap_or("ERROR: name not found".into())
+        );
+
+        exit(0);
+    }
 
     if let Some(theme_name) = cli.theme_name {
         let mut themes_dir = get_themes_dir();
