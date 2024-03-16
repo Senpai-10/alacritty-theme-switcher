@@ -1,3 +1,5 @@
+// TODO: Refactor this code!
+
 use serde::{Deserialize, Serialize};
 use std::{io, io::stdout};
 
