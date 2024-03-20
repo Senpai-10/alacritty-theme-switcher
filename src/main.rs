@@ -1,4 +1,5 @@
 // TODO: Refactor this code!
+// TODO: add fuzzy finding search
 
 use serde::{Deserialize, Serialize};
 use std::{io, io::stdout};
